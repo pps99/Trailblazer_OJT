@@ -1,0 +1,52 @@
+.not-card.not-card1
+  .clearfix
+    h1.float-left Posts
+    ==link_to "New Post", new_post_path, class: 'display btn button1 mv-20 float-right'
+    ==link_to "Download", download_posts_path(format: :csv), class: 'btn button1 button2 float-right mv-r-20'
+    ==link_to "Upload", upload_csv_posts_path, class: 'btn btn-dark float-right mv-r-20'
+  .clearfix
+    .float-left.form-outline 
+      =form_tag search_posts_path, method: :get
+        = text_field_tag :search_keyword,{}, class: "form-control w-auto mv-r-20 float-left", value: last_search_keyword, placeholder: "Title or Description"
+        =submit_tag "Search", class: "btn button1 button2 mv-r-20"
+        ==link_to 'Clear', posts_path, class:"btn btn-secondary mv-20"
+  table#table_id.table.display
+      thead
+          tr
+              th Title
+              th Description
+              th Posted User
+              th Created At
+              th Operations
+      tbody
+          - model.each do |post|
+            tr
+                td 
+                    ==link_to post.title, post_path(post)
+                td 
+                    ==post.description
+                td 
+                    ==post.create_user.name
+                td 
+                    ==post.created_at.strftime("%Y/%m/%d %I:%M:%S %p " )
+                td              
+                    ==link_to "Edit", edit_post_path(post), class: "btn btn-dark mr-2"
+                    ==link_to 'Delete', '#', "data-toggle"=>"modal", "data-target" => "#deletepost_#{post.id}",:class=>'btn button1 button2'
+                    
+                .modal.fade id="deletepost_#{post.id}"
+                    .modal-dialog
+                      .modal-content
+                        .modal-header
+                          h5 class="modal-title" Post Detete Confirmation
+                          button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            span aria-hidden="true" &times;
+                        .modal-body
+                          p Are you sure to delete?
+                        .modal-footer
+                            a href="#" data-dismiss="modal" class="btn button1" Cancel
+                            == button_to "Delete", post_path(post.id), method: :delete, class: 'btn button1 button2' 
+
+.modal.fade id="postDetail" aria-hidden="true"
+  .modal-dialog role="document"
+    .modal-content style="width:700px"
+
